@@ -1,15 +1,62 @@
-## Put comments here that give an overall description of what your
-## functions do
+##### CREATES 2 FUNCTIONS THAT ALLOW YOU TO CALCULATE THE INVERSE FROM A MATRIX
+##### MATRIX MUST BE TREATED BY THE makeCacheMatrix AND STORED IN AN OBJECT
+##### AND AFTER THAT CAN BE CALCULATED BY THE cacheSolve FUNCTION
 
-## Write a short comment describing this function
+
+#####FUNCTION: makeCacheMatrix
+## CREATES A LIST THAT CONTAINS A SET OF INSTRUCTIONS THAT 
+## WILL BE USED BY THE cacheSolve FUNCTION TO CALCULATE THE INVERSE OF A GIVEN
+## MATRIX, STORE IT IN AN OBJECT AND CALL IT TO SAVE TIME IF ITS VALUE IS 
+## REQUIRED AFTER.
 
 makeCacheMatrix <- function(x = matrix()) {
 
+#FIRST STEP IS CREATE AN OBJECT CALLED m WERE WILL BE STORED THE CALCULATED INVERSE MATRIX.
+	m<-NULL
+#AFTER THAT IT WILL BE CREATED A FUNCTION THAT ASSIGN VALUES TO THE OBJECTS x AND m
+	set<-function(matrixInput){
+		x<<-matrixInput
+		m<<-NULL
+	}
+#A FUNCTION IS CREATED, THAT "CALL" THE X OBJECT  
+	get<-function()x
+#AFTER THAT IS CREATED A FUNCTION THAT ASSIGNS TO mresult THE ARGUMENT THAT
+#YOU ASIGN TO THAT FUNCTION
+	setinvers<-function(object1){m<<-object1} ###WARNING DIFERENT TO ORIGINAL
+#THEN ANOTHER FUNCTION IS CREATED THAT CALLS mresult
+	getinvers<-function()m
+#FINALLY A LIST IS CREATED WITH THE CREATED OBJECTS
+	list(set=set,get=get,setinvers=setinvers,getinvers=getinvers)
+#END
 }
+#####
 
 
-## Write a short comment describing this function
+#####FUNCTION: cacheSolve
+## CALCULATE THE INVERSE OF A MATRIX AND STORE IT IN AN OBJECT TO SAVE TIME CALCULATING. TO DO IT REQUIRES
+## THAT THE MARIX WILL BE TREATED WITH THE makeCacheMatrix FUNCTION AND STORED IN AN R OBJECT
 
-cacheSolve <- function(x, ...) {
+
+cacheSolve <- function(x, ...) { 
         ## Return a matrix that is the inverse of 'x'
+#FIRST OF ALL EXECUTE THE FUNCTION getmean() STORED IN THE LIST CREATED BY THE makeCacheMatrix FUNCTION AND 
+#STORES IT IN AN OBJECT
+	mresult<-x$getinvers()
+#THEN EVALUATES IF THE FUNCTION HAD BEEN CALCULATED BEFORE. IF IT IS TRUE GET THE VALUE STORED BEFORE
+	if(!is.null(mresult)){
+		message("getting cached data")
+		return(mresult)
+	}
+#IF THE VALUE HAD NOT BEEN CALCULATED, SET THE MATRIX IN AN OBJECT
+	data<-x$get()
+#AFTER THAT CALCULATES THE INVERSE OF THE MATRIX
+	mresult<-solve(data,...)
+#THEN EXECUTE THE setinvers FUNCTION STORED IN THE LIST CREATED BY THE makeCacheMatrix FUNCTION TO SAVE THE
+#VALUE IN THE m OBJECT
+	x$setinvers(mresult)
+#FINALLY PRINT THE OBJECT WERE THE CACHE INVERSE IS STORED
+	mresult
+#END
 }
+
+####
